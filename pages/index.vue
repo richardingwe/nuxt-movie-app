@@ -102,6 +102,24 @@
 <script>
 import axios from 'axios'
 export default {
+  name: 'home',
+  head() {
+    return {
+      title: 'Movie App - Latest Streaming Movie Info',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Get all the latest streaming movies in theaters & online',
+        },
+        {
+          hid: 'keywords',
+          name: 'keywords',
+          content: 'movies, stream, stremaing',
+        },
+      ],
+    }
+  },
   data() {
     return {
       movies: [],
@@ -128,7 +146,6 @@ export default {
       result.data.results.forEach((movie) => {
         this.movies.push(movie)
       })
-      console.log(this.movies)
     },
     async searchMovies() {
       const data = axios.get(
