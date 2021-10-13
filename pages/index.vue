@@ -18,7 +18,47 @@
 
     <!-- Movies -->
     <div class="container movies">
-      <div id="movie-grid" class="movies-grid">
+      <!-- Searched Movies -->
+      <div v-if="searchInput !== ''" id="movie-grid" class="movies-grid">
+        <div
+          class="movie"
+          v-for="(movie, index) in searchedMovies"
+          :key="index"
+        >
+          <div class="movie-img">
+            <img
+              :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`"
+              alt=""
+            />
+            <p class="review">{{ movie.vote_average }}</p>
+            <p class="overview">{{ movie.overview }}</p>
+          </div>
+          <div class="info">
+            <p class="title">
+              {{ movie.title.slice(0, 25)
+              }}<span v-if="movie.title.length > 25">...</span>
+            </p>
+            <p class="release">
+              Released:
+              {{
+                new Date(movie.release_date).toLocaleString('en-us', {
+                  month: 'long',
+                  day: 'numeric',
+                  year: 'numeric',
+                })
+              }}
+            </p>
+            <NuxtLink
+              class="button button-light"
+              :to="{ name: 'movies-movieid', params: { movieid: movie.id } }"
+            >
+              Get More Info
+            </NuxtLink>
+          </div>
+        </div>
+      </div>
+      <!-- Now Streaming -->
+      <div v-else id="movie-grid" class="movies-grid">
         <div class="movie" v-for="(movie, index) in movies" :key="index">
           <div class="movie-img">
             <img
@@ -62,17 +102,20 @@ export default {
   data() {
     return {
       movies: [],
+      searchedMovies: [],
+      searchInput: '',
     }
   },
   async fetch() {
-    // if (this.searchInput === '') {
-    await this.getMovies()
-    //   return
-    // }
+    if (this.searchInput === '') {
+      await this.getMovies()
+      return
+    }
     // if (this.searchInput !== '') {
-    //   await this.searchMovies()
+    await this.searchMovies()
     // }
   },
+  // fetchDelay: 1000,
   methods: {
     async getMovies() {
       const data = axios.get(
@@ -83,6 +126,19 @@ export default {
         this.movies.push(movie)
       })
       console.log(this.movies)
+    },
+    async searchMovies() {
+      const data = axios.get(
+        `https://api.themoviedb.org/3/search/movie?api_key=64a666b34bea09d8c5cb2a047c96ef9b&language=en-US&page=1&query=${this.searchInput}`
+      )
+      const result = await data
+      result.data.results.forEach((movie) => {
+        this.searchedMovies.push(movie)
+      })
+    },
+    clearSearch() {
+      this.searchInput = ''
+      this.searchedMovies = []
     },
   },
 }
