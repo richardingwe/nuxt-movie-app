@@ -3,6 +3,19 @@
     <!-- Hero -->
     <Hero />
 
+    <!-- Search -->
+    <div class="container search">
+      <input
+        type="text"
+        placeholder="Search"
+        @keyup.enter="$fetch"
+        v-model.lazy="searchInput"
+      />
+      <button v-show="searchInput !== ''" @click="clearSearch" class="button">
+        Clear Search
+      </button>
+    </div>
+
     <!-- Movies -->
     <div class="container movies">
       <div id="movie-grid" class="movies-grid">
