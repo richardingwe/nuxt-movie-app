@@ -1,5 +1,7 @@
 # nuxt-movie-app
 
+url: https://nuxt-movie-app-two.vercel.app
+
 ## Build Setup
 
 ```bash
